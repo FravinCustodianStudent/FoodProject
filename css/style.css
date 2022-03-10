@@ -115,6 +115,7 @@ a {
 }
 
 .sidepanel {
+    z-index: 2;
     position: fixed;
     left: 60px;
     top: 240px;
@@ -145,8 +146,10 @@ a {
 }
 
 .sidepanel__icon {
+    cursor: pointer;
     width: 24px;
-    height: 24px
+    height: 24px;
+    transition: 1s;
 }
 
 .sidepanel__icon img {
@@ -738,8 +741,9 @@ a {
     transform: scale(1.2);
 }
 .sidepanel__icon:hover{
-    opacity: 0.9;
-    transform: scale(1.2);
+
+    transform: scale(1.5);
+
 }
 @keyframes fade {
     from {

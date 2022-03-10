@@ -1,5 +1,4 @@
 window.addEventListener('DOMContentLoaded', function() {
-
     // Tabs
 
     let tabs = document.querySelectorAll('.tabheader__item'),
@@ -181,33 +180,48 @@ window.addEventListener('DOMContentLoaded', function() {
             this.parent.append(element);
         }
     }
+    const getResources = async (url, data) =>{
+        const res = await fetch(url);
 
-    new MenuCard(
-        "img/tabs/vegy.jpg",
-        "vegy",
-        'Меню "Фитнес"',
-        'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-        9,
-        ".menu .container"
-    ).render();
+        if (!res.ok){
+           throw new Error(`Coudld not fetch ${url}, status: ${res.status}`);
+        }
 
-    new MenuCard(
-        "img/tabs/post.jpg",
-        "post",
-        'Меню "Постное"',
-        'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
-        14,
-        ".menu .container"
-    ).render();
+        return await res.json();
+    };
+    getResources('http://localhost:3000/menu')
+        .then(data =>{
+           data.forEach(({img ,altimg, title, descr, price}) =>{
+             new MenuCard(img ,altimg, title, descr, price, '.menu .container').render();
+           });
+        });
 
-    new MenuCard(
-        "img/tabs/elite.jpg",
-        "elite",
-        'Меню “Премиум”',
-        'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
-        21,
-        ".menu .container"
-    ).render();
+    // new MenuCard(
+    //     "img/tabs/vegy.jpg",
+    //     "vegy",
+    //     'Меню "Фитнес"',
+    //     'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
+    //     9,
+    //     ".menu .container"
+    // ).render();
+    //
+    // new MenuCard(
+    //     "img/tabs/post.jpg",
+    //     "post",
+    //     'Меню "Постное"',
+    //     'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
+    //     14,
+    //     ".menu .container"
+    // ).render();
+    //
+    // new MenuCard(
+    //     "img/tabs/elite.jpg",
+    //     "elite",
+    //     'Меню “Премиум”',
+    //     'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
+    //     21,
+    //     ".menu .container"
+    // ).render();
 
     // Forms
 
@@ -219,10 +233,22 @@ window.addEventListener('DOMContentLoaded', function() {
     };
 
     forms.forEach(item => {
-        postData(item);
+        bindPostData(item);
     });
 
-    function postData(form) {
+    const postData = async (url, data) =>{
+      const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: data
+      });
+
+      return await res.json();
+    };
+
+    function bindPostData(form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
@@ -234,32 +260,22 @@ window.addEventListener('DOMContentLoaded', function() {
             `;
             form.insertAdjacentElement('afterend', statusMessage);
 
-            const request = new XMLHttpRequest();
-            request.open('POST', 'server.php');
-            request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
             const formData = new FormData(form);
 
-            const object = {};
-            formData.forEach(function(value, key){
-                object[key] = value;
-            });
-            const json = JSON.stringify(object);
+            const json = JSON.stringify(Object.fromEntries(formData.entries()));
 
-            request.send(json);
-
-            request.addEventListener('load', () => {
-                if (request.status === 200) {
-                    console.log(request.response);
-                    showThanksModal(message.success);
-                    statusMessage.remove();
-                    form.reset();
-                } else {
-                    showThanksModal(message.failure);
-                }
+                postData('http://localhost:3000/requests',json)
+                .then(data => {
+                console.log(data);
+                showThanksModal(message.success);
+                statusMessage.remove();
+            }).catch(() => {
+                showThanksModal(message.failure);
+            }).finally(() => {
+                form.reset();
             });
         });
     }
-
     function showThanksModal(message) {
         const prevModalDialog = document.querySelector('.modal__dialog');
 
@@ -282,4 +298,146 @@ window.addEventListener('DOMContentLoaded', function() {
             closeModal();
         }, 4000);
     }
+
+    fetch('db.json')
+        .then(data => data.json())
+        .then(res=>console.log(res));
+
+//Slider
+
+    // class Slider{
+    //     constructor(src,alt,parent) {
+    //         this.alt = alt;
+    //         this.src = src;
+    //         this.parent = document.querySelector(parent);
+    //     }
+    //     render(){
+    //         const element = document.createElement('div');
+    //         element.classList.add("offer__slide")
+    //
+    //         element.innerHTML = `
+    //                     <img src="${this.src}" alt="${this.alt}">
+    //         `;
+    //         this.parent.append(element);
+    //     }
+    //     }
+    //
+    // let slides,slideIndex = 1;
+    //     axios.get(" http://localhost:3000/slider")
+    //         .then(data =>{
+    //             data.data.forEach(({img ,alt})=>{
+    //               new Slider(img,alt,'.offer__slider .offer__slider-wrapper').render();
+    //
+    //             });
+    //             slides = document.querySelectorAll('.offer__slide');
+    //         });
+
+    let slideIndex = 1;
+    let offset = 0;
+    const slides = document.querySelectorAll('.offer__slide'),
+        prev = document.querySelector('.offer__slider-prev'),
+        next = document.querySelector('.offer__slider-next'),
+        total = document.querySelector('#total'),
+        current = document.querySelector('#current'),
+        slidesWrapper = document.querySelector('.offer__slider-wrapper'),
+        slidesField = document.querySelector('.offer_slider-inner'),
+        width = window.getComputedStyle(slidesWrapper).width;
+
+    if (slides.length < 10) {
+        total.textContent = `0${slides.length}`;
+        current.textContent = `0${slideIndex}`;
+    } else {
+        total.textContent = slides.length;
+        current.textContent = slideIndex;
+    }
+
+
+    slidesField.style.width = 100 * slides.length +'%';
+    slidesField.style.display = 'flex';
+    slidesField.style.transition = '0.5s all';
+    slidesWrapper.style.overflow = 'hidden';
+
+    slides.forEach(slide =>{
+        slide.style.width = width
+    });
+    next.addEventListener('click', ()=>{
+        if(offset === +width.slice(0,width.length-2) * (slides.length - 1)){
+            offset = 0;
+        }else {
+            offset+= +width.slice(0,width.length-2);
+        }
+       slidesField.style.transform=`translateX(-${offset}px)`;
+        if (slideIndex === slides.length){
+            slideIndex = 1;
+        }else {
+            slideIndex++;
+        }
+        if (slides.length<10){
+            current.textContent=`0${slideIndex}`;
+        }else {
+            current.textContent=slideIndex;
+        }
+    });
+    prev.addEventListener('click', ()=>{
+        if(offset === 0){
+            offset = +width.slice(0,width.length-2) * (slides.length - 1);
+        }else {
+            offset-= +width.slice(0,width.length-2);
+        }
+        slidesField.style.transform=`translateX(-${offset}px)`;
+        if (slideIndex === 1){
+            slideIndex = slides.length;
+        }else {
+            slideIndex--;
+        }
+
+        if (slides.length<10){
+            current.textContent=`0${slideIndex}`;
+        }else {
+            current.textContent=slideIndex;
+        }
+    });
+
+ /*   showSlides(slideIndex);
+
+    if (slides.length < 10) {
+        total.textContent = `0${slides.length}`;
+    } else {
+        total.textContent = slides.length;
+    }
+
+    function showSlides(n) {
+        if (n > slides.length) {
+            slideIndex = 1;
+        }
+        if (n < 1) {
+            slideIndex = slides.length;
+        }
+
+        slides.forEach((item) =>{
+            item.classList.add('hide');
+            item.classList.remove('show', 'fade')
+        });
+
+        slides[slideIndex - 1].classList.remove('hide'); // Как ваша самостоятельная работа - переписать на использование классов show/hide
+        slides[slideIndex - 1].classList.add('show','fade');
+
+        if (slides.length < 10) {
+            current.textContent =  `0${slideIndex}`;
+        } else {
+            current.textContent =  slideIndex;
+        }
+    }
+
+    function plusSlides (n) {
+        showSlides(slideIndex += n);
+    }
+
+    prev.addEventListener('click', function(){
+        plusSlides(-1);
+    });
+
+    next.addEventListener('click', function(){
+        plusSlides(1);
+    });*/
 });
