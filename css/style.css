@@ -395,6 +395,7 @@ a {
 }
 
 .calculating__choose-item {
+    cursor:pointer;
     display: flex;
     align-items: center;
     justify-content: center;
