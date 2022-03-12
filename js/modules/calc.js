@@ -1,8 +1,6 @@
-function calculator(){
-    // Calculator
-
+function calc() {
     const result = document.querySelector('.calculating__result span');
-
+    
     let sex, height, weight, age, ratio;
 
     if (localStorage.getItem('sex')) {
@@ -62,13 +60,13 @@ function calculator(){
                     sex = e.target.getAttribute('id');
                     localStorage.setItem('sex', e.target.getAttribute('id'));
                 }
-
+    
                 elements.forEach(elem => {
                     elem.classList.remove(activeClass);
                 });
-
+    
                 e.target.classList.add(activeClass);
-
+    
                 calcTotal();
             });
         });
@@ -105,5 +103,7 @@ function calculator(){
     getDynamicInformation('#height');
     getDynamicInformation('#weight');
     getDynamicInformation('#age');
+
 }
-export default calculator;
+
+export default calc;

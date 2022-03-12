@@ -1,26 +1,14 @@
 {
-  "name": "food_dist",
+  "name": "food",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/FravinCustodianStudent/FoodProject.git"
-  },
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/FravinCustodianStudent/FoodProject/issues"
-  },
-  "homepage": "https://github.com/FravinCustodianStudent/FoodProject#readme",
   "devDependencies": {
-    "json-server": "^0.17.0",
-    "webpack-cli": "^4.9.2"
-  },
-  "dependencies": {
-    "axios": "^0.26.1"
+    "json-server": "^0.16.1"
   }
 }

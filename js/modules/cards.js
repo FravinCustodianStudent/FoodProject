@@ -1,6 +1,5 @@
-function cards(){
-    // Используем классы для создание карточек меню
-
+import {getResource} from '../services/services';
+function cards() {
     class MenuCard {
         constructor(src, alt, title, descr, price, parentSelector, ...classes) {
             this.src = src;
@@ -11,11 +10,11 @@ function cards(){
             this.classes = classes;
             this.parent = document.querySelector(parentSelector);
             this.transfer = 27;
-            this.changeToUAH();
+            this.changeToUAH(); 
         }
 
         changeToUAH() {
-            this.price = this.price * this.transfer;
+            this.price = this.price * this.transfer; 
         }
 
         render() {
@@ -41,21 +40,13 @@ function cards(){
             this.parent.append(element);
         }
     }
-    const getResources = async (url, data) =>{
-        const res = await fetch(url);
 
-        if (!res.ok){
-            throw new Error(`Coudld not fetch ${url}, status: ${res.status}`);
-        }
-
-        return await res.json();
-    };
-    getResources('http://localhost:3000/menu')
-        .then(data =>{
-            data.forEach(({img ,altimg, title, descr, price}) =>{
-                new MenuCard(img ,altimg, title, descr, price, '.menu .container').render();
+    getResource('http://localhost:3000/menu')
+        .then(data => {
+            data.forEach(({img, altimg, title, descr, price}) => {
+                new MenuCard(img, altimg, title, descr, price, ".menu .container").render();
             });
         });
-
 }
-module.exports = cards;
+
+export default cards;

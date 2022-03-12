@@ -23,38 +23,6 @@
     }
   ],
   "requests": [
-    {
-      "name": "32423",
-      "phone": "234234",
-      "id": 1
-    },
-    {
-      "name": "545",
-      "phone": "54154",
-      "id": 2
-    },
-    {
-      "name": "qwqwe",
-      "phone": "qwewqe",
-      "id": 3
-    }
-  ],
-  "slider": [
-    {
-      "img": "img/slider/pepper.jpg",
-      "alt": "pepper"
-    },
-    {
-      "img": "img/slider/food-12.jpg",
-      "alt": "food"
-    },
-    {
-      "img": "img/slider/olive-oil.jpg",
-      "alt": "oil"
-    },
-    {
-      "img": "img/slider/paprika.jpg",
-      "alt": "paprika"
-    }
+
   ]
 }
